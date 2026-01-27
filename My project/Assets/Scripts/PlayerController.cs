@@ -56,6 +56,18 @@ public class PlayerController : MonoBehaviour
                 Gate.gameObject.SetActive(false);
             }
         }
-    }
+        if(other.gameObject.CompareTag("danger"))
+        {
+            SceneMAnager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        void SetScoreText()
+        {
+            ScoreText.text = "Score: " + Score.ToString();
+            if (Score == 10)
+            {
+                WinText.text = "You Win!";
+            }
+        }
 }
 
