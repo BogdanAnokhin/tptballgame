@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManegement;
-using TMPro
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
+    public float Speed;
     public TMP_Text ScoreText;
     public TMP_Text WinText;
     public GameObject Gate;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComonent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         Score = 0;
         SetScoreText();
         WinText.text = "";
@@ -30,20 +30,21 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        rb.AddForce(movement * speed);
-        
-        //Restart Level
-        if (input.GetKeyDown(KeyCode.R))
+        rb.AddForce(movement * Speed);
+
+        //Restart level
+        if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        //Quit Game
-        if (input.GetKeyDown(KeyCode.Escape))
+
+        //Quit game
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
-        )
     }
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("coin"))
@@ -56,18 +57,20 @@ public class PlayerController : MonoBehaviour
                 Gate.gameObject.SetActive(false);
             }
         }
-        if(other.gameObject.CompareTag("danger"))
-        {
-            SceneMAnager.LoadScene(SceneManager.GetActiveScene().name);
-        }
 
-        void SetScoreText()
+        if (other.gameObject.CompareTag("danger"))
         {
-            ScoreText.text = "Score: " + Score.ToString();
-            if (Score == 10)
-            {
-                WinText.text = "You Win!";
-            }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+    }
+
+    void SetScoreText()
+    {
+        ScoreText.text = "Score: " + Score.ToString();
+
+        if(Score == 10)
+        {
+            WinText.text = "You win! Press R to restart or ESC to quit";
+        }
+    }
 }
-
