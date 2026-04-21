@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,39 +6,44 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public float Speed;
+    public float Speed = 10f;
+
     public TMP_Text ScoreText;
     public TMP_Text WinText;
     public GameObject Gate;
-    private Rigidbody rb;
-    public int Score;
 
-    // Start is called before the first frame update
+    private Rigidbody rb;
+    private int Score;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Score = 0;
+
+        if (WinText != null)
+            WinText.text = "";
+
         SetScoreText();
-        WinText.text = "";
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate() // ✅ лучше для физики
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
         rb.AddForce(movement * Speed);
+    }
 
-        //Restart level
+    void Update()
+    {
+        // Restart
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        //Quit game
+        // Quit
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
@@ -47,18 +52,19 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("coin"))
+        if (other.CompareTag("coin"))
         {
             other.gameObject.SetActive(false);
             Score++;
             SetScoreText();
-            if (Score >= 5)
+
+            if (Score >= 5 && Gate != null)
             {
-                Gate.gameObject.SetActive(false);
+                Gate.SetActive(false);
             }
         }
 
-        if (other.gameObject.CompareTag("danger"))
+        if (other.CompareTag("danger"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
@@ -66,9 +72,10 @@ public class PlayerController : MonoBehaviour
 
     void SetScoreText()
     {
-        ScoreText.text = "Score: " + Score.ToString();
+        if (ScoreText != null)
+            ScoreText.text = "Score: " + Score.ToString();
 
-        if(Score == 10)
+        if (Score == 10 && WinText != null)
         {
             WinText.text = "You win! Press R to restart or ESC to quit";
         }
